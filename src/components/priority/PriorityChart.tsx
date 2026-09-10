@@ -24,10 +24,7 @@ function pivotData(
 ) {
   const scheme = priority.scheme ?? []
 
-  // Only municipality-level aggregates
-  const smvRows = rows.filter((r) => r.territorio === app.local)
-
-  const filtered = smvRows.filter((r) =>
+  const filtered = rows.filter((r) =>
     stratifiers.every((s) => {
       const value = r[s]
       if (value === undefined) return true
@@ -36,7 +33,7 @@ function pivotData(
     }),
   )
 
-  const byYear = new Map<number, Record<string, number>>()
+  const byYear = new Map<number, Record<string, number | null>>()
   const keySet = new Set<string>()
 
   for (const row of filtered) {
@@ -44,7 +41,7 @@ function pivotData(
 
     keySet.add(key)
     if (!byYear.has(row.anio)) byYear.set(row.anio, {})
-    byYear.get(row.anio)![key] = row.valor
+    byYear.get(row.anio)![key] = row.valor === 0 ? null : row.valor
   }
 
   const chartData = Array.from(byYear.entries())
