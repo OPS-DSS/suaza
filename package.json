@@ -1,5 +1,5 @@
 {
-  "name": "@ops-dss/starter-local-astro",
+  "name": "suaza",
   "type": "module",
   "version": "0.0.1",
   "private": false,
@@ -47,9 +47,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/OPS-DSS/starter-local-astro.git"
+    "url": "https://github.com/OPS-DSS/suaza.git"
   },
   "bugs": {
-    "url": "https://github.com/OPS-DSS/starter-local-astro/issues"
+    "url": "https://github.com/OPS-DSS/suaza/issues"
   }
 }
