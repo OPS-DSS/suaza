@@ -360,7 +360,7 @@ export const AnalyticsPageContent = ({
       )}
 
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex flex-col md:basis-1/2 flex-1 gap-4">
+        <div className="flex flex-row basis-1/2 flex-1 gap-4">
           {/* ── Forest plot ── */}
           {forestPlotData && forestPlotData.length > 0 && (
             <ExpandablePanel>
@@ -407,7 +407,7 @@ export const AnalyticsPageContent = ({
           )}
         </div>
 
-        <div className="flex flex-col md:basis-1/2 gap-4 flex-1">
+        <div className="flex flex-col md:basis-1/2 gap-4 flex-1 hidden">
           {/* ── Scatter chart ── */}
           {scatterPoints.length > 0 && (
             <ExpandablePanel className="relative border rounded-lg p-4 flex flex-col gap-4">
@@ -439,298 +439,303 @@ export const AnalyticsPageContent = ({
 
           {/* ── Map section ── */}
           {app.features.map && (
-          <ExpandablePanel className="relative border rounded-lg p-4 flex flex-col gap-4">
-            {(isFullscreen) => (
-              <>
-                <h2 className="text-xl font-bold text-gray-900 mr-8">
-                  Mapa:{' '}
-                  {isBivariate ? (
-                    <>
-                      <span style={{ color: selectedMeta.color }}>
-                        {selectedMeta.title}
-                      </span>{' '}
-                      vs{' '}
-                      <span>
-                        {dssSecondaryMeta
-                          ? dssSecondaryMeta.title
-                          : priority.axisLabel}
-                      </span>
-                    </>
-                  ) : isDssBivariate ? (
-                    <>
-                      <span style={{ color: selectedMeta.color }}>
-                        {selectedMeta.label}
-                      </span>{' '}
-                      vs{' '}
-                      <span>
-                        {dssSecondaryMeta
-                          ? dssSecondaryMeta.label
-                          : priority.axisLabel}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span style={{ color: selectedMeta.color }}>
-                        Solo {priority.title}
-                      </span>
-                    </>
-                  )}
-                </h2>
-                {/* Controls bar */}
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  {/* Bivariate / solo toggle + DSS indicator selector */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    <div className="flex rounded-lg overflow-hidden border border-gray-200 text-sm">
-                      <button
-                        onClick={() => handleBivariateToggle(true)}
-                        className={`px-4 py-1.5 transition-colors ${
-                          isBivariate && !isDssBivariate
-                            ? 'bg-gray-800 text-white'
-                            : 'bg-white text-gray-600 hover:bg-gray-50'
-                        }`}
-                      >
-                        Bivariado
-                      </button>
-                      <button
-                        onClick={() => handleBivariateToggle(false)}
-                        className={`px-4 py-1.5 transition-colors ${
-                          !isBivariate && !isDssBivariate
-                            ? 'bg-gray-800 text-white'
-                            : 'bg-white text-gray-600 hover:bg-gray-50'
-                        }`}
-                      >
-                        Solo {priority.title}
-                      </button>
-                    </div>
-
-                    {/* DSS indicator selector */}
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs text-gray-500 shrink-0">
-                        Bivariado DSS:
-                      </span>
-                      <select
-                        value={selectedDssIndicator ?? ''}
-                        onChange={(e) =>
-                          handleDssIndicatorChange(
-                            e.target.value
-                              ? (e.target.value as AnalyticsIndicatorKey)
-                              : null,
-                          )
-                        }
-                        className={`text-sm rounded-lg border px-2 py-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 ${
-                          isDssBivariate
-                            ? 'border-gray-800 bg-gray-800 text-white'
-                            : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-                        }`}
-                      >
-                        <option value="">Seleccionar indicador</option>
-                        {dssOptions.map(([key, meta]) => (
-                          <option key={key} value={key}>
-                            {meta.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <div className="flex rounded-lg overflow-hidden border border-gray-200 text-sm">
-                      <button
-                        onClick={() => handleViewChange('map')}
-                        className={`px-4 py-1.5 transition-colors ${
-                          view === 'map'
-                            ? 'bg-gray-800 text-white'
-                            : 'bg-white text-gray-600 hover:bg-gray-50'
-                        }`}
-                      >
-                        Mapa
-                      </button>
-                      <button
-                        onClick={() => handleViewChange('table')}
-                        className={`px-4 py-1.5 transition-colors ${
-                          view === 'table'
-                            ? 'bg-gray-800 text-white'
-                            : 'bg-white text-gray-600 hover:bg-gray-50'
-                        }`}
-                      >
-                        Tabla
-                      </button>
-                    </div>
-
-                    {csvUrl && (
-                      <a
-                        href={csvUrl}
-                        download
-                        className="flex items-center gap-1.5 px-4 py-1.5 text-sm rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                          <polyline points="7 10 12 15 17 10" />
-                          <line x1="12" y1="15" x2="12" y2="3" />
-                        </svg>
-                        Descargar Tabla
-                      </a>
+            <ExpandablePanel className="relative border rounded-lg p-4 flex flex-col gap-4">
+              {(isFullscreen) => (
+                <>
+                  <h2 className="text-xl font-bold text-gray-900 mr-8">
+                    Mapa:{' '}
+                    {isBivariate ? (
+                      <>
+                        <span style={{ color: selectedMeta.color }}>
+                          {selectedMeta.title}
+                        </span>{' '}
+                        vs{' '}
+                        <span>
+                          {dssSecondaryMeta
+                            ? dssSecondaryMeta.title
+                            : priority.axisLabel}
+                        </span>
+                      </>
+                    ) : isDssBivariate ? (
+                      <>
+                        <span style={{ color: selectedMeta.color }}>
+                          {selectedMeta.label}
+                        </span>{' '}
+                        vs{' '}
+                        <span>
+                          {dssSecondaryMeta
+                            ? dssSecondaryMeta.label
+                            : priority.axisLabel}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span style={{ color: selectedMeta.color }}>
+                          Solo {priority.title}
+                        </span>
+                      </>
                     )}
-                  </div>
-                </div>
-
-                {/* Map view */}
-                {view === 'map' && (
-                  <>
-                    <Suspense
-                      fallback={
-                        <div
-                          className="flex items-center justify-center text-gray-400 text-sm"
-                          style={{
-                            height: isFullscreen
-                              ? 'calc(100vh - 280px)'
-                              : '30em',
-                          }}
+                  </h2>
+                  {/* Controls bar */}
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    {/* Bivariate / solo toggle + DSS indicator selector */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex rounded-lg overflow-hidden border border-gray-200 text-sm">
+                        <button
+                          onClick={() => handleBivariateToggle(true)}
+                          className={`px-4 py-1.5 transition-colors ${
+                            isBivariate && !isDssBivariate
+                              ? 'bg-gray-800 text-white'
+                              : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
                         >
-                          Cargando mapa…
-                        </div>
-                      }
-                    >
-                      <DSChoroplethMap
-                        geojsonUrl={activeGeojsonUrl}
-                        center={[2.3, -75.7]}
-                        zoom={8}
-                        height={isFullscreen ? 'calc(100vh - 280px)' : '30em'}
-                        nameProperty="Territorio"
-                        valueProperty="value"
-                        valueName={mapValueName}
-                        secondaryValueProperty={
-                          isDssBivariate || isBivariate
-                            ? priority.bivariateValue
-                            : undefined
-                        }
-                        secondaryValueName={mapSecondaryValueName}
-                        valueFormatter={mapValueFormatter}
-                      />
-                    </Suspense>
+                          Bivariado
+                        </button>
+                        <button
+                          onClick={() => handleBivariateToggle(false)}
+                          className={`px-4 py-1.5 transition-colors ${
+                            !isBivariate && !isDssBivariate
+                              ? 'bg-gray-800 text-white'
+                              : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          Solo {priority.title}
+                        </button>
+                      </div>
 
-                    {/* Legend */}
-                    <div className="flex flex-col gap-2 text-sm">
-                      <span className="font-medium text-gray-700">
-                        Leyenda:
-                      </span>
+                      {/* DSS indicator selector */}
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs text-gray-500 shrink-0">
+                          Bivariado DSS:
+                        </span>
+                        <select
+                          value={selectedDssIndicator ?? ''}
+                          onChange={(e) =>
+                            handleDssIndicatorChange(
+                              e.target.value
+                                ? (e.target.value as AnalyticsIndicatorKey)
+                                : null,
+                            )
+                          }
+                          className={`text-sm rounded-lg border px-2 py-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 ${
+                            isDssBivariate
+                              ? 'border-gray-800 bg-gray-800 text-white'
+                              : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          <option value="">Seleccionar indicador</option>
+                          {dssOptions.map(([key, meta]) => (
+                            <option key={key} value={key}>
+                              {meta.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
 
-                      {isDssBivariate || isBivariate ? (
-                        <div className="flex items-start gap-6 flex-wrap">
-                          <BivariateLegend
-                            indLabel={`${selectedMeta.label} →`}
-                            yAxisLabel={
-                              isDssBivariate
-                                ? dssSecondaryMeta!.label
-                                : priority.axisLabel
-                            }
-                          />
-                          <div className="flex items-center gap-1.5 self-end">
-                            <div
-                              style={{
-                                width: 14,
-                                height: 14,
-                                background: '#CCCCCC',
-                                border: '1px solid #9ca3af',
-                                borderRadius: 3,
-                                flexShrink: 0,
-                              }}
-                            />
-                            <span className="text-gray-600 text-xs">
-                              Sin datos
-                            </span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-wrap gap-x-6 gap-y-2 items-center">
-                          <div className="flex items-center gap-2">
-                            <span className="text-gray-500 text-xs w-36 shrink-0">
-                              {priority.title}
-                            </span>
-                            <span className="text-gray-600 text-xs">Menor</span>
-                            <div
-                              style={{
-                                width: 120,
-                                height: 14,
-                                background:
-                                  'linear-gradient(to right, #FFFFB2, #FECC5C, #FD8D3C, #F03B20, #BD0026)',
-                                border: '1px solid #9ca3af',
-                                borderRadius: 3,
-                              }}
-                            />
-                            <span className="text-gray-600 text-xs">Mayor</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <div
-                              style={{
-                                width: 14,
-                                height: 14,
-                                background: '#CCCCCC',
-                                border: '1px solid #9ca3af',
-                                borderRadius: 3,
-                                flexShrink: 0,
-                              }}
-                            />
-                            <span className="text-gray-600 text-xs">
-                              Sin datos
-                            </span>
-                          </div>
-                        </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex rounded-lg overflow-hidden border border-gray-200 text-sm">
+                        <button
+                          onClick={() => handleViewChange('map')}
+                          className={`px-4 py-1.5 transition-colors ${
+                            view === 'map'
+                              ? 'bg-gray-800 text-white'
+                              : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          Mapa
+                        </button>
+                        <button
+                          onClick={() => handleViewChange('table')}
+                          className={`px-4 py-1.5 transition-colors ${
+                            view === 'table'
+                              ? 'bg-gray-800 text-white'
+                              : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          Tabla
+                        </button>
+                      </div>
+
+                      {csvUrl && (
+                        <a
+                          href={csvUrl}
+                          download
+                          className="flex items-center gap-1.5 px-4 py-1.5 text-sm rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                          </svg>
+                          Descargar Tabla
+                        </a>
                       )}
                     </div>
-                  </>
-                )}
+                  </div>
 
-                {/* Table view */}
-                {view === 'table' &&
-                  (tableLoading ? (
-                    <p className="text-gray-500 italic py-8 text-center">
-                      Cargando datos…
-                    </p>
-                  ) : (
-                    <div className="overflow-x-auto rounded-lg border border-gray-200">
-                      <table className="w-full text-sm text-left">
-                        <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
-                          <tr>
-                            <th className="px-4 py-3 font-medium">Barrio</th>
-                            <th className="px-4 py-3 font-medium">
-                              {tableColumnLabel}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                          {tableData.map((row) => (
-                            <tr
-                              key={row.name}
-                              className="bg-white hover:bg-gray-50 transition-colors"
-                            >
-                              <td className="px-4 py-3 font-medium text-gray-900">
-                                {row.name}
-                              </td>
-                              <td className="px-4 py-3 text-gray-600">
-                                {row.value != null && Number.isFinite(row.value)
-                                  ? formatTableValue(row.value)
-                                  : '—'}
-                              </td>
+                  {/* Map view */}
+                  {view === 'map' && (
+                    <>
+                      <Suspense
+                        fallback={
+                          <div
+                            className="flex items-center justify-center text-gray-400 text-sm"
+                            style={{
+                              height: isFullscreen
+                                ? 'calc(100vh - 280px)'
+                                : '30em',
+                            }}
+                          >
+                            Cargando mapa…
+                          </div>
+                        }
+                      >
+                        <DSChoroplethMap
+                          geojsonUrl={activeGeojsonUrl}
+                          center={[2.3, -75.7]}
+                          zoom={8}
+                          height={isFullscreen ? 'calc(100vh - 280px)' : '30em'}
+                          nameProperty="Territorio"
+                          valueProperty="value"
+                          valueName={mapValueName}
+                          secondaryValueProperty={
+                            isDssBivariate || isBivariate
+                              ? priority.bivariateValue
+                              : undefined
+                          }
+                          secondaryValueName={mapSecondaryValueName}
+                          valueFormatter={mapValueFormatter}
+                        />
+                      </Suspense>
+
+                      {/* Legend */}
+                      <div className="flex flex-col gap-2 text-sm">
+                        <span className="font-medium text-gray-700">
+                          Leyenda:
+                        </span>
+
+                        {isDssBivariate || isBivariate ? (
+                          <div className="flex items-start gap-6 flex-wrap">
+                            <BivariateLegend
+                              indLabel={`${selectedMeta.label} →`}
+                              yAxisLabel={
+                                isDssBivariate
+                                  ? dssSecondaryMeta!.label
+                                  : priority.axisLabel
+                              }
+                            />
+                            <div className="flex items-center gap-1.5 self-end">
+                              <div
+                                style={{
+                                  width: 14,
+                                  height: 14,
+                                  background: '#CCCCCC',
+                                  border: '1px solid #9ca3af',
+                                  borderRadius: 3,
+                                  flexShrink: 0,
+                                }}
+                              />
+                              <span className="text-gray-600 text-xs">
+                                Sin datos
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-wrap gap-x-6 gap-y-2 items-center">
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500 text-xs w-36 shrink-0">
+                                {priority.title}
+                              </span>
+                              <span className="text-gray-600 text-xs">
+                                Menor
+                              </span>
+                              <div
+                                style={{
+                                  width: 120,
+                                  height: 14,
+                                  background:
+                                    'linear-gradient(to right, #FFFFB2, #FECC5C, #FD8D3C, #F03B20, #BD0026)',
+                                  border: '1px solid #9ca3af',
+                                  borderRadius: 3,
+                                }}
+                              />
+                              <span className="text-gray-600 text-xs">
+                                Mayor
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <div
+                                style={{
+                                  width: 14,
+                                  height: 14,
+                                  background: '#CCCCCC',
+                                  border: '1px solid #9ca3af',
+                                  borderRadius: 3,
+                                  flexShrink: 0,
+                                }}
+                              />
+                              <span className="text-gray-600 text-xs">
+                                Sin datos
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {/* Table view */}
+                  {view === 'table' &&
+                    (tableLoading ? (
+                      <p className="text-gray-500 italic py-8 text-center">
+                        Cargando datos…
+                      </p>
+                    ) : (
+                      <div className="overflow-x-auto rounded-lg border border-gray-200">
+                        <table className="w-full text-sm text-left">
+                          <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
+                            <tr>
+                              <th className="px-4 py-3 font-medium">Barrio</th>
+                              <th className="px-4 py-3 font-medium">
+                                {tableColumnLabel}
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ))}
-              </>
-            )}
-          </ExpandablePanel>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {tableData.map((row) => (
+                              <tr
+                                key={row.name}
+                                className="bg-white hover:bg-gray-50 transition-colors"
+                              >
+                                <td className="px-4 py-3 font-medium text-gray-900">
+                                  {row.name}
+                                </td>
+                                <td className="px-4 py-3 text-gray-600">
+                                  {row.value != null &&
+                                  Number.isFinite(row.value)
+                                    ? formatTableValue(row.value)
+                                    : '—'}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ))}
+                </>
+              )}
+            </ExpandablePanel>
           )}
         </div>
       </div>

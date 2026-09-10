@@ -25,19 +25,19 @@
           "name": "territorio",
           "type": "string",
           "role": "territory",
-          "index": 1
+          "index": 0
         },
         {
           "name": "anio",
           "type": "number",
           "role": "year",
-          "index": 4
+          "index": 2
         },
         {
           "name": "valor",
           "type": "number",
           "role": "value",
-          "index": 6
+          "index": 4
         },
         {
           "name": "sexo",
@@ -49,7 +49,7 @@
             "Masculino": "#22c55e",
             "Femenino": "#f59e0b"
           },
-          "index": 5
+          "index": 3
         }
       ],
       "inequitySource": "Las métricas de desigualdad implementadas se basan en el marco metodológico del Cuantificador de Desigualdades en Salud, desarrollado conjuntamente por la Organización Panamericana de la Salud (OPS/OMS) y el Centro Nacional de Epidemiología, Prevención y Control de Enfermedades del Ministerio de Salud del Perú (CDC-Perú). Disponible en https://opendata.paho.org/es/ods3/cuantificador-desigualdades-salud",
@@ -296,7 +296,7 @@
       "file": "forest-plot.parquet",
       "scheme": [
         { "name": "anio", "type": "number", "role": "year", "index": 0 },
-        { "name": "indicador", "type": "string", "index": 0 },
+        { "name": "indicador", "type": "string", "index": 1 },
         { "name": "label", "type": "string", "index": 2 },
         {
           "name": "correlacion",
